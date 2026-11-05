@@ -1,0 +1,27 @@
+PROFIT 3.0 — SITE (GitHub Pages)
+
+ESTRUTURA DESTE PACOTE (suba tudo isto no repositório)
+  index.html            estrutura do app
+  css/app.css           estilos
+  js/                   lógica (foods, nutrition, app, navigation, engine,
+                        goals, rewards, reminders, nutrition-ui, config, sync)
+  sw.js                 cache offline (lista de arquivos)
+  manifest.json         instalação na tela inicial
+  icon*.png, icon.svg   ícones
+  .nojekyll             necessário para o GitHub Pages
+
+NÃO SUBIR PARA O SITE
+  server/Code.gs        vai no Google Apps Script (veja GUIA-LOGIN-GOOGLE.txt)
+
+PUBLICAR
+1. Crie um repositório público (ex.: profit).
+2. "Add file > Upload files" e envie o conteúdo deste pacote, mantendo as pastas css/ e js/.
+3. Settings > Pages > Source: "Deploy from a branch", branch main, pasta / (root).
+4. O endereço será https://SEU-USUARIO.github.io/profit/
+
+ATUALIZAR
+- Troque os arquivos e aumente CACHE_VERSION em sw.js (profit-v3 > profit-v4),
+  senão quem já instalou pode continuar vendo a versão antiga.
+
+CONFIGURAÇÃO DO LOGIN
+- Edite js/config.js (Client ID e URL do Apps Script). Sem isso, o login não aparece.

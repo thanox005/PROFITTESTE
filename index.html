@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport"/>
+<meta content="#0f172a" name="theme-color"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="icon.svg" rel="icon" type="image/svg+xml"/>
+<link href="icon-192.png" rel="apple-touch-icon"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="PROFIT"/>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>PROFIT 3.0</title>
+<link href="css/app.css" rel="stylesheet"/>
+
+
+<!-- ===== PATCH 1 — CSS DO FILTRO NUTRICIONAL ===== -->
+
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="brand">
+<div class="logo">
+            🌱
+        </div>
+<div>
+<h1>PROFIT 3.0</h1>
+<p>Seu diário alimentar, um dia de cada vez.</p>
+</div>
+</div>
+<button aria-label="Alternar tema" class="theme-btn" id="temaBtn" title="Alternar tema" type="button">☀️</button>
+</header>
+<main class="content">
+<section class="card" data-screen="perfil" id="perfilCard">
+<div class="card-title">
+        👤 Seu perfil
+    </div>
+<div class="user-row">
+<input class="input" id="nome" placeholder="Como podemos chamar você?" type="text"/>
+<div class="profile-mini" id="perfilMini">
+<div class="profile-mini-main">
+<div class="profile-avatar" id="perfilAvatar">?</div>
+<div>
+<div class="profile-name" id="perfilNomeMini">Usuário PROFIT</div>
+<div class="profile-id" id="perfilIdMini">ID: —</div>
+</div>
+</div>
+<div class="profile-actions">
+<button class="profile-action" id="perfilBtn" type="button">👤 Perfil</button>
+<button class="profile-action danger" id="sairBtn" type="button">Sair</button>
+</div>
+</div>
+</div>
+<div class="profit-profile-details">
+  <div class="card-title" style="margin-top:12px;margin-bottom:6px;">📋 Informações do usuário</div>
+  <div class="profit-form-grid">
+    <label>Sexo<select class="input" id="perfilSexo"><option value="">Selecione</option><option value="m">Masculino</option><option value="f">Feminino</option></select></label>
+    <label>Idade<input class="input" id="perfilIdade" type="number" min="13" max="100" placeholder="Ex.: 30"></label>
+    <label>Altura (cm)<input class="input" id="perfilAltura" type="number" min="100" max="230" placeholder="Ex.: 180"></label>
+    <label>Peso atual (kg)<input class="input" id="perfilPesoAtual" type="number" min="30" max="300" step="0.1" placeholder="Ex.: 80"></label>
+    <label>Peso desejado (kg)<input class="input" id="perfilPesoMeta" type="number" min="30" max="300" step="0.1" placeholder="Ex.: 75"></label>
+    <label>Objetivo<select class="input" id="perfilObjetivo"><option value="emagrecer">Emagrecer</option><option value="manter">Manter</option><option value="ganhar">Ganhar massa/peso</option></select></label>
+  </div>
+  <button class="btn btn-green" id="salvarPerfilDadosBtn" type="button">💾 Salvar informações</button>
+  <div class="small-note" id="perfilDadosStatus"></div>
+</div>
+<div class="profit-nutrition-box" id="profitNutritionBox">
+  <div class="card-title" style="margin-bottom:6px;">🤖 Recomendação do PROFIT</div>
+  <div class="small-note">Preencha seus dados para o PROFIT estimar calorias, proteína, carboidratos, gordura e água.</div>
+  <div class="profit-recommendation-note">As recomendações usam os dados salvos no seu Perfil. Atualize seu perfil quando seu peso, objetivo ou rotina mudarem.</div>
+<div style="display:none"><div class="profit-form-grid">
+    <label>Sexo<select class="input" id="nutSexo"><option value="">Selecione</option><option value="m">Masculino</option><option value="f">Feminino</option></select></label>
+    <label>Idade<input class="input" id="nutIdade" type="number" min="13" max="100" placeholder="Ex.: 30"></label>
+    <label>Altura (cm)<input class="input" id="nutAltura" type="number" min="100" max="230" placeholder="Ex.: 180"></label>
+    <label>Peso (kg)<input class="input" id="nutPeso" type="number" min="30" max="300" step="0.1" placeholder="Ex.: 80"></label>
+    <label>Atividade<select class="input" id="nutAtividade"><option value="1.2">Sedentário</option><option value="1.375">Levemente ativo</option><option value="1.55" selected>Moderadamente ativo</option><option value="1.725">Muito ativo</option><option value="1.9">Extremamente ativo</option></select></label>
+    <label>Objetivo<select class="input" id="nutObjetivo"><option value="emagrecer">Emagrecer</option><option value="manter" selected>Manter</option><option value="ganhar">Ganhar massa/peso</option></select></label>
+  </div></div>
+  <button class="btn btn-green" id="calcularMetasBtn" type="button">🤖 Atualizar recomendação</button>
+  <div class="profit-target-grid" id="profitTargetGrid"></div>
+  <div class="small-note" id="profitNutritionNote"></div>
+</div>
+<div class="profile-actions" style="margin-top:8px;">
+  <button class="profile-action" id="abrirConfiguracaoBtn" type="button">⚙️ Configuração</button>
+</div>
+</section>
+<section class="motivation motivation-box" data-screen="home" id="motivacaoCard">
+<div class="motivation-title">
+        💚 UM LEMBRETE PARA VOCÊ
+    </div>
+<div class="motivation-text" id="mensagemMotivacional">
+        Cada pequena escolha conta.
+    </div>
+</section>
+<section class="card" data-screen="home" id="interativoCard">
+<div class="card-title">⚡ Seu progresso</div>
+<div class="kpi-grid">
+<div class="kpi-box">
+<div class="kpi-label">🔥 Sequência</div>
+<div class="kpi-value" id="streakValue">0 dias</div>
+<div class="kpi-sub" id="streakSub">Comece registrando hoje.</div>
+</div>
+<div class="kpi-box">
+<div class="kpi-label">⭐ Nível</div>
+<div class="kpi-value" id="nivelValue">1</div>
+<div class="kpi-sub" id="nivelSub">0 XP</div>
+</div>
+</div>
+<div class="xp-wrap">
+<div class="xp-top"><span id="xpLabel">Progresso do nível</span><span id="xpNumbers">0 / 100 XP</span></div>
+<div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+</div>
+</section>
+<section class="card" data-screen="agua" id="aguaCard">
+<div class="water-head">
+<div class="card-title" style="margin-bottom:0;">💧 Água</div>
+<span class="badge" id="waterStatus">0 / 2,0 L</span>
+</div>
+<div class="small-note" style="margin-top:7px;">Acompanhe sua hidratação. A meta fica salva neste dispositivo.</div>
+<div class="water-glasses" id="waterGlasses"></div>
+<div class="water-controls">
+<button class="btn btn-green" id="addWaterBtn" type="button">＋ 250 ml</button>
+<button class="btn btn-light" id="removeWaterBtn" type="button">− 250 ml</button>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+<input class="input" id="waterGoalInput" min="0.5" placeholder="Meta em litros" step="0.1" type="number"/>
+<button class="btn btn-light" id="saveWaterGoalBtn" type="button">🎯 Salvar meta</button>
+</div>
+</section>
+<section class="card" data-screen="perfil" id="configuracaoCard">
+<div class="notif-head">
+<div>
+<div class="card-title" style="margin-bottom:3px;">🔔 Lembretes</div>
+<div class="swipe-settings" id="swipeSettings">
+<label>⬅️ Esquerda
+<select id="swipeLeftSelect">
+<option value="interativoCard">📈 Progresso</option><option value="configuracaoCard">🔔 Configuração</option><option value="conquistasCard">🏆 Conquistas</option><option value="analiseDiaCard">🧠 Análise do dia</option><option value="descubraCard">🥗 Descubra alimentos</option>
+</select>
+</label>
+<label>➡️ Direita
+<select id="swipeRightSelect">
+<option value="descubraCard">🥗 Descubra alimentos</option><option value="analiseDiaCard">🧠 Análise do dia</option><option value="conquistasCard">🏆 Conquistas</option><option value="configuracaoCard">🔔 Configuração</option><option value="interativoCard">📈 Progresso</option>
+</select>
+</label>
+<label>⬆️ Cima
+<select id="swipeUpSelect">
+<option value="conquistasCard">🏆 Conquistas</option><option value="interativoCard">📈 Progresso</option><option value="configuracaoCard">🔔 Configuração</option><option value="analiseDiaCard">🧠 Análise do dia</option><option value="descubraCard">🥗 Descubra alimentos</option>
+</select>
+</label>
+<label>⬇️ Baixo
+<select id="swipeDownSelect">
+<option value="descubraCard">🥗 Descubra alimentos</option><option value="interativoCard">📈 Progresso</option><option value="configuracaoCard">🔔 Configuração</option><option value="conquistasCard">🏆 Conquistas</option><option value="analiseDiaCard">🧠 Análise do dia</option>
+</select>
+</label>
+</div>
+<div class="small-note">Notificações funcionam melhor no PROFIT publicado em HTTPS/PWA.</div>
+</div>
+<span class="badge" id="notifStatus">Desativado</span>
+</div>
+<div class="switch-row">
+<div class="switch-copy">
+<div class="switch-title">Ativar notificações</div>
+<div class="switch-sub">Pede permissão ao navegador e habilita lembretes enquanto suportado.</div>
+</div>
+<label class="switch">
+<input id="notifToggle" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="switch-row">
+<div class="switch-copy">
+<div class="switch-title">Lembrete diário</div>
+<div class="switch-sub">Horário para lembrar de registrar sua alimentação.</div>
+</div>
+<input class="select-small" id="notifTime" type="time" value="12:30"/>
+</div>
+<button class="btn btn-light" id="testNotifBtn" style="width:100%;margin-top:9px;" type="button">🔔 Testar notificação</button>
+</section>
+<section class="card" data-screen="home" id="missoesCard">
+<div class="mission-head">
+<div class="card-title" style="margin-bottom:0;">🎯 Missões de hoje</div>
+<span class="badge" id="missionXp">+0 XP</span>
+</div>
+<div id="missionList"></div>
+</section>
+<section class="card" data-screen="home" id="conquistasCard">
+<div class="achievement-head">
+<div class="card-title" style="margin-bottom:0;">🏆 Conquistas</div>
+<span class="badge" id="achievementCount">0 desbloqueadas</span>
+</div>
+<div class="achievement-grid" id="achievementGrid"></div>
+</section>
+<section class="card" data-screen="home" id="analiseDiaCard">
+<div class="card-title">🧠 Análise do dia</div>
+<div class="small-note" id="analiseInteligente">Registre uma refeição para receber uma análise rápida do seu dia.</div>
+</section>
+<section class="card" data-screen="home" id="diaCard">
+<div class="card-title">
+        📊 Seu dia
+    </div>
+<div class="summary">
+<div class="summary-item">
+<div class="summary-label">
+                CALORIAS
+            </div>
+<div class="summary-value">
+<span id="totalKcal">0</span>
+<small>kcal</small>
+</div>
+</div>
+<div class="summary-item">
+<div class="summary-label">
+                PROTEÍNA
+            </div>
+<div class="summary-value">
+<span id="totalP">0</span>
+<small>g</small>
+</div>
+</div>
+<div class="summary-item">
+<div class="summary-label">
+                CARBOIDRATOS
+            </div>
+<div class="summary-value">
+<span id="totalC">0</span>
+<small>g</small>
+</div>
+</div>
+<div class="summary-item">
+<div class="summary-label">
+                GORDURAS
+            </div>
+<div class="summary-value">
+<span id="totalG">0</span>
+<small>g</small>
+</div>
+</div>
+</div>
+</section>
+<section class="card" data-screen="alimentacao" id="metaCard">
+<div class="card-title">
+        🎯 Meta diária de calorias
+    </div>
+<div class="small-note">O PROFIT interpreta sua meta de acordo com o objetivo escolhido: perder, ganhar ou manter peso.</div>
+<div class="goal-mode-wrap">
+  <div class="small-note" style="margin-bottom:6px;font-weight:700">Qual é seu objetivo?</div>
+  <div class="goal-mode-buttons" role="group" aria-label="Objetivo de peso">
+    <button type="button" class="goal-mode-btn" data-goal-mode="perder">⬇️ Perder peso</button>
+    <button type="button" class="goal-mode-btn" data-goal-mode="manter">⚖️ Manter</button>
+    <button type="button" class="goal-mode-btn" data-goal-mode="ganhar">⬆️ Ganhar peso</button>
+  </div>
+  <div id="goalModeHelp" class="small-note" style="margin-top:7px">Escolha o objetivo para interpretar corretamente suas calorias.</div>
+</div>
+<div class="goal-row">
+<input class="input" id="meta" min="1" type="number" value="2000"/>
+<div style="font-size:12px;color:var(--muted);">kcal/dia</div>
+</div>
+<button class="btn btn-green" id="salvarMetaKcalBtn" type="button">💾 Salvar meta kcal</button>
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+<div class="goal-info">
+<span id="goalUsed">0 kcal consumidas</span>
+<span id="goalRemain">2000 kcal restantes</span>
+</div>
+<div id="goalStatus" class="goal-status" aria-live="polite">Escolha seu objetivo para acompanhar sua meta.</div>
+<div class="profit-goal-badge" id="profitGoalBadge"></div>
+</section>
+<section class="card profit-rewards-card" data-screen="inicio" id="profitRewardsCard">
+  <div class="rewards-head">
+    <div><div class="card-title" style="margin-bottom:3px">🏆 Conquistas PROFIT</div><div class="small-note">Sua evolução vira uma lembrança que você pode compartilhar.</div></div>
+    <div class="rewards-icon">✨</div>
+  </div>
+  <div class="rewards-progress-line"><span id="rewardProgressLabel">0 dias válidos acumulados</span><strong id="rewardNextLabel">Próxima: 1 dia</strong></div>
+  <div class="rewards-track"><div id="rewardProgressFill" class="rewards-track-fill"></div></div>
+  <div class="rewards-milestones" id="rewardMilestones"></div>
+  <div class="rewards-status" id="rewardStatus" aria-live="polite">Registre suas refeições para começar a construir suas conquistas.</div>
+  <button class="btn btn-green" id="rewardOpenBtn" type="button" style="width:100%;margin-top:10px" disabled>🎁 Minhas recompensas</button>
+  <div class="small-note" style="margin-top:8px">Um dia conta com pelo menos 3 alimentos registrados em 2 refeições diferentes e consumo dentro de ±10% da meta. Dados incompletos não significam fracasso: apenas não entram na contagem.</div>
+</section>
+<section class="card" data-screen="evolucao" id="semanaCard">
+<div class="period-title">
+<div class="card-title" style="margin-bottom:0;">📈 Resumo da semana</div>
+<span id="semanaPeriodo"></span>
+</div>
+<div class="analytics-grid">
+<div class="analytics-item">
+<div class="analytics-label">Dias registrados</div>
+<div class="analytics-value" id="semDias">0</div>
+<div class="analytics-sub">de 7 dias</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Média kcal</div>
+<div class="analytics-value" id="semKcal">0</div>
+<div class="analytics-sub">dias registrados</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Proteína média</div>
+<div class="analytics-value" id="semP">0 g</div>
+<div class="analytics-sub">por dia registrado</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Total kcal</div>
+<div class="analytics-value" id="semTotalKcal">0</div>
+<div class="analytics-sub">na semana</div>
+</div>
+</div>
+</section>
+<section class="card" data-screen="evolucao" id="mesCard">
+<div class="period-title">
+<div class="card-title" style="margin-bottom:0;">📅 Resumo do mês</div>
+<span id="mesPeriodo"></span>
+</div>
+<div class="analytics-grid">
+<div class="analytics-item">
+<div class="analytics-label">Dias registrados</div>
+<div class="analytics-value" id="mesDias">0</div>
+<div class="analytics-sub">no mês</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Média kcal</div>
+<div class="analytics-value" id="mesKcal">0</div>
+<div class="analytics-sub">dias registrados</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Proteína média</div>
+<div class="analytics-value" id="mesP">0 g</div>
+<div class="analytics-sub">por dia registrado</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Total kcal</div>
+<div class="analytics-value" id="mesTotalKcal">0</div>
+<div class="analytics-sub">no mês</div>
+</div>
+</div>
+</section>
+<section class="card" data-screen="evolucao" id="pesoCard">
+<div class="card-title">⚖️ Acompanhamento de peso</div>
+<div class="profit-weight-goal" id="profitWeightGoalBox"></div>
+<div style="font-size:11px;color:var(--muted);line-height:1.4;">
+        Registre seu peso na data selecionada. No resumo mensal, o app compara o primeiro e o último registro do mês.
+    </div>
+<div class="weight-box">
+<div style="font-size:10px;color:var(--muted);margin-bottom:7px;">
+            Peso na data selecionada
+        </div>
+<div class="weight-row">
+<input class="input" id="peso" min="1" placeholder="Ex.: 80,5" step="0.1" type="number"/>
+<button class="btn btn-green" id="salvarPesoBtn" type="button">Salvar</button>
+</div>
+<div class="weight-history" id="pesoStatus"></div>
+</div>
+<div class="analytics-grid" style="margin-top:9px;">
+<div class="analytics-item">
+<div class="analytics-label">Primeiro peso</div>
+<div class="analytics-value" id="pesoInicial">—</div>
+<div class="analytics-sub" id="pesoInicialData">no mês</div>
+</div>
+<div class="analytics-item">
+<div class="analytics-label">Último peso</div>
+<div class="analytics-value" id="pesoFinal">—</div>
+<div class="analytics-sub" id="pesoFinalData">no mês</div>
+</div>
+<div class="analytics-item" style="grid-column:1/-1;">
+<div class="analytics-label">Variação no mês</div>
+<div class="analytics-value" id="pesoVariacao">—</div>
+<div class="analytics-sub" id="pesoMensagem">Registre pelo menos dois pesos no mês.</div>
+</div>
+</div>
+</section>
+<section class="card" data-screen="evolucao" id="medidasCard">
+<div class="card-title">📏 Evolução corporal</div>
+<div class="small-note">Registre suas medidas periodicamente para comparar sua evolução além da balança.</div>
+<div class="profit-measure-grid">
+  <label>Peso (kg)<input class="input" id="medPeso" type="number" min="1" step="0.1" placeholder="80,0"></label>
+  <label>Cintura (cm)<input class="input" id="medCintura" type="number" min="1" step="0.1"></label>
+  <label>Abdômen (cm)<input class="input" id="medAbdomen" type="number" min="1" step="0.1"></label>
+  <label>Peito (cm)<input class="input" id="medPeito" type="number" min="1" step="0.1"></label>
+  <label>Braço D (cm)<input class="input" id="medBracoD" type="number" min="1" step="0.1"></label>
+  <label>Braço E (cm)<input class="input" id="medBracoE" type="number" min="1" step="0.1"></label>
+  <label>Quadril (cm)<input class="input" id="medQuadril" type="number" min="1" step="0.1"></label>
+  <label>Coxa D (cm)<input class="input" id="medCoxaD" type="number" min="1" step="0.1"></label>
+  <label>Coxa E (cm)<input class="input" id="medCoxaE" type="number" min="1" step="0.1"></label>
+  <label>Panturrilha D (cm)<input class="input" id="medPantD" type="number" min="1" step="0.1"></label>
+  <label>Panturrilha E (cm)<input class="input" id="medPantE" type="number" min="1" step="0.1"></label>
+</div>
+<button class="btn btn-green" id="salvarMedidasBtn" type="button">📏 Salvar medidas de hoje</button>
+<div class="profit-measure-status" id="medidasStatus"></div>
+<div class="profit-measure-history" id="medidasHistorico"></div>
+</section>
+<section class="card" data-screen="alimentacao" id="descubraCard">
+<div class="date-row" style="margin-bottom:10px;">
+<input class="input" id="data" type="date"/>
+<button class="btn btn-dark" id="hojeBtn" type="button">HOJE</button>
+</div>
+<div class="add-food-header">
+<div class="card-title">🍽️ Descubra alimentos</div>
+<button class="btn-add-base" id="abrirAdicionarAlimentoBtn" type="button">＋ Adicionar alimento</button>
+</div>
+<input class="input search" id="busca" placeholder="🔎 Procurar alimento..." type="text"/>
+<!-- ===== PATCH 2 — SELETOR DE NUTRIENTE / NÍVEIS ===== -->
+<div class="nf-box" id="nfBox">
+  <div class="nf-chips" role="group" aria-label="Nutriente do filtro">
+    <button type="button" class="nf-chip active" data-nf="kcal">🔥 Calorias</button>
+    <button type="button" class="nf-chip" data-nf="p">🥩 Proteína</button>
+    <button type="button" class="nf-chip" data-nf="c">🍚 Carbo</button>
+    <button type="button" class="nf-chip" data-nf="g">🥑 Gordura</button>
+  </div>
+  <div id="nfMacro" style="display:none">
+    <div class="nf-levels" id="nfLevels"></div>
+    <div class="nf-foot">
+      <span id="nfInfo"></span>
+      <button type="button" class="nf-clear" id="nfClear">✕ Limpar filtro</button>
+    </div>
+  </div>
+</div>
+<div class="levels">
+<button class="level active" data-level="Todos" type="button">
+<strong>✨</strong>
+            TODOS
+            <small>Todos</small>
+</button>
+<button class="level" data-level="1" type="button">
+<strong>🟢</strong>
+            NÍVEL 1
+            <small>até 20 kcal</small>
+</button>
+<button class="level" data-level="2" type="button">
+<strong>🟢</strong>
+            NÍVEL 2
+            <small>21–60 kcal</small>
+</button>
+<button class="level" data-level="3" type="button">
+<strong>🟡</strong>
+            NÍVEL 3
+            <small>61–100 kcal</small>
+</button>
+<button class="level" data-level="4" type="button">
+<strong>🟠</strong>
+            NÍVEL 4
+            <small>101–200 kcal</small>
+</button>
+</div>
+<div style="
+        background:#fee2e2;
+        color:var(--danger-text);
+        border-radius:10px;
+        padding:8px;
+        font-size:10px;
+        margin-bottom:10px;
+        text-align:center;
+        ">
+        🔴 <b>NÍVEL 5</b> — 200+ kcal por 100g
+    </div>
+<div class="food-list" id="foodList"></div>
+<div class="selected" id="selected">
+<div class="selected-name" id="selectedName"></div>
+<div class="selected-info" id="selectedInfo"></div>
+<div class="gram-row">
+<input class="input" id="gramas" min="1" placeholder="Gramas" type="number" value="100"/>
+<select class="meal" id="refeicao">
+<option value="cafe">☀️ Café da manhã</option>
+<option value="lanche_manha">🍎 Lanche da manhã</option>
+<option value="almoco">🍛 Almoço</option>
+<option value="lanche_tarde">🥪 Lanche da tarde</option>
+<option value="jantar">🌙 Jantar</option>
+<option value="lanche_noite">🌜 Lanche da noite</option>
+<option value="outros">🍽️ Outros</option>
+</select>
+</div>
+<div class="preview-kcal" id="previaCalorias"></div>
+<div class="add-row">
+<button class="btn btn-green" id="adicionarBtn" type="button">
+                + Adicionar alimento
+            </button>
+<button class="btn btn-light" id="cancelarBtn" type="button">
+                Cancelar
+            </button>
+</div>
+</div>
+</section>
+<section class="card" data-screen="alimentacao" id="diarioCard">
+<div class="card-title">
+        📖 Diário alimentar
+    </div>
+<div id="diario"></div>
+</section>
+<section class="card" data-screen="alimentacao" id="acoesDiaCard">
+<div class="actions">
+<button class="btn btn-green" id="salvarBtn" type="button">
+            💾 Salvar dia
+        </button>
+<button class="btn btn-danger" id="limparBtn" type="button">
+            🗑️ Limpar dia
+        </button>
+</div>
+</section>
+<section class="card share-card" data-screen="alimentacao" id="compartilharCard">
+<div class="card-title">
+        📤 Compartilhar resumo
+    </div>
+<div class="share-sub">
+        Gere um resumo simples para enviar a um amigo, guardar em outro app ou colar em uma IA.
+    </div>
+<div class="share-grid">
+<button class="share-mode active" id="resumoDiaBtn" type="button">
+            📅 Resumo do dia
+        </button>
+<button class="share-mode" id="resumoPeriodoBtn" type="button">
+            📊 Resumo por período
+        </button>
+</div>
+<div id="periodoResumoCampos" style="display:none;">
+<div class="share-date-row">
+<div>
+<label class="share-date-label" for="resumoDataInicio">Data inicial</label>
+<input class="input" id="resumoDataInicio" type="date"/>
+</div>
+<div>
+<label class="share-date-label" for="resumoDataFim">Data final</label>
+<input class="input" id="resumoDataFim" type="date"/>
+</div>
+</div>
+</div>
+<div class="share-actions">
+<button class="btn btn-dark" id="gerarResumoBtn" type="button">
+            ✨ Gerar resumo
+        </button>
+<button class="btn btn-green" id="copiarResumoBtn" type="button">
+            📋 Copiar resumo
+        </button>
+</div>
+<button class="btn btn-light" id="compartilharResumoBtn" style="width:100%;margin-top:8px;" type="button">
+        📲 Compartilhar
+    </button>
+<div class="share-preview" id="resumoPreview">
+<div class="share-preview-title">
+            Prévia do resumo
+        </div>
+<textarea class="share-output" id="resumoOutput" readonly=""></textarea>
+</div>
+<div class="share-note">
+        O resumo usa somente os dados registrados no PROFIT neste dispositivo.
+    </div>
+</section>
+<section class="card" data-screen="evolucao" id="historicoCard">
+<div class="card-title">
+        📅 Histórico
+    </div>
+<div class="history" id="historico"></div>
+<button class="btn back-home" id="homeBtn" type="button">
+        ⌂ Voltar ao topo
+    </button>
+</section>
+<section class="card" data-screen="perfil" id="contaCard">
+<div class="card-title">☁️ Conta e sincronização</div>
+<div id="syncSemConfig" class="small-note" style="display:none">Sincronização na nuvem ainda não configurada. Seus dados ficam salvos neste aparelho.</div>
+<div id="syncDeslogado">
+<div class="small-note">Entre com sua conta Google para não perder seus dados e usar o PROFIT em outros aparelhos.</div>
+<div id="googleBtn" style="margin-top:10px;display:flex;justify-content:center;min-height:44px"></div>
+<div class="small-note" id="syncAviso" style="margin-top:8px"></div>
+</div>
+<div id="syncLogado" style="display:none">
+<div class="profile-mini">
+<div class="profile-mini-main">
+<div class="profile-avatar" id="syncAvatar">?</div>
+<div style="min-width:0"><div class="profile-name" id="syncNome"></div><div class="profile-id" id="syncEmail"></div></div>
+</div>
+</div>
+<div class="small-note" id="syncStatus" style="margin-top:8px"></div>
+<div class="actions" style="margin-top:10px">
+<button class="btn btn-green" id="syncAgoraBtn" type="button">🔄 Sincronizar agora</button>
+<button class="btn btn-light" id="syncSairBtn" type="button">Sair</button>
+</div>
+<button class="btn btn-danger" id="syncExcluirBtn" type="button" style="width:100%;margin-top:8px">🗑️ Excluir minha conta e dados da nuvem</button>
+</div>
+</section>
+<section class="card" data-screen="perfil" id="backupCard">
+<div class="card-title">
+        📦 Backup dos dados
+    </div>
+<div class="backup-actions">
+<button class="btn btn-dark" id="exportarBtn" type="button">
+            📤 Exportar dados
+        </button>
+<button class="btn btn-green" id="importarBtn" type="button">
+            📥 Importar dados
+        </button>
+</div>
+<input accept="application/json,.json" id="arquivoImportacao" style="display:none" type="file"/>
+<div class="backup-note">
+        O backup é salvo em formato JSON e pode restaurar os dados do PROFIT neste ou em outro navegador.
+    </div>
+</section>
+<div class="footer">
+    PROFIT 3.0 • Consistência antes da perfeição 💚
+</div>
+<div aria-label="Atalhos por gesto" class="swipe-shortcut" id="swipeShortcut" role="slider" tabindex="0">
+<div aria-hidden="true" class="swipe-directions">
+<span class="swipe-direction swipe-up" id="swipeUpIcon">⬆️</span>
+<span class="swipe-direction swipe-down" id="swipeDownIcon">⬇️</span>
+<span class="swipe-direction swipe-left" id="swipeLeftIcon">⬅️</span>
+<span class="swipe-direction swipe-right" id="swipeRightIcon">➡️</span>
+</div>
+<span class="swipe-preview" id="swipePreview"></span>
+<span class="swipe-handle" id="swipeHandle">•</span>
+</div>
+</main>
+<nav aria-label="Navegação principal" class="bottom-nav" id="profitBottomNav"><button aria-label="Início" class="bottom-nav-btn active" data-screen="home" type="button"><span class="bottom-nav-icon">⌂</span><span class="bottom-nav-label">Início</span></button><button aria-label="Alimentação" class="bottom-nav-btn" data-screen="alimentacao" type="button"><span class="bottom-nav-icon">🍽️</span><span class="bottom-nav-label">Alimentação</span></button><button aria-label="Água" class="bottom-nav-btn" data-screen="agua" type="button"><span class="bottom-nav-icon">💧</span><span class="bottom-nav-label">Água</span></button><button aria-label="Evolução" class="bottom-nav-btn" data-screen="evolucao" type="button"><span class="bottom-nav-icon">📊</span><span class="bottom-nav-label">Evolução</span></button><button aria-label="Perfil" class="bottom-nav-btn" data-screen="perfil" type="button"><span class="bottom-nav-icon">👤</span><span class="bottom-nav-label">Perfil</span></button></nav></div>
+<div class="toast" id="toast"></div>
+<!-- =========================================================
+     MODAL — PERFIL PROFIT
+========================================================= -->
+<div aria-hidden="true" class="modal-backdrop modal-profile" id="perfilModal">
+<div aria-labelledby="perfilModalTitulo" aria-modal="true" class="food-modal" role="dialog">
+<div class="modal-head">
+<div class="card-title" id="perfilModalTitulo" style="margin:0;">👤 Meu perfil</div>
+<button aria-label="Fechar" class="modal-close" id="fecharPerfilModalBtn" type="button">×</button>
+</div>
+<div class="modal-sub">Seu nome fica salvo neste dispositivo e é usado como perfil padrão.</div>
+<input class="input" id="perfilNomeInput" maxlength="60" placeholder="Seu nome" type="text"/>
+<div class="profile-id-big">
+<div class="small-note">Seu identificador local</div>
+<strong id="perfilIdBig">FP-000000</strong>
+</div>
+<div class="profile-modal-note">
+            Este ID é apenas um identificador local do perfil. Ele não cria uma conta online e não sincroniza dados entre aparelhos.
+        </div>
+<div class="modal-actions">
+<button class="btn btn-light" id="sairPerfilModalBtn" type="button">↩ Trocar usuário</button>
+<button class="btn btn-green" id="salvarPerfilBtn" type="button">💾 Salvar perfil</button>
+</div>
+</div>
+</div>
+<!-- =========================================================
+     MODAL — ADICIONAR ALIMENTO À BASE
+========================================================= -->
+<div aria-hidden="true" class="modal-backdrop" id="alimentoModal">
+<div aria-labelledby="modalAlimentoTitulo" aria-modal="true" class="food-modal" role="dialog">
+<div class="modal-head">
+<div class="card-title" id="modalAlimentoTitulo" style="margin:0;">🥗 Novo alimento</div>
+<button aria-label="Fechar" class="modal-close" id="fecharAlimentoModalBtn" type="button">×</button>
+</div>
+<div class="modal-sub">
+            Cadastre seu alimento e ele ficará salvo nesta instalação do PROFIT. A informação nutricional é considerada por <b>100 g</b>.
+        </div>
+<div class="form-grid">
+<input class="input full" id="novoAlimentoNome" maxlength="80" placeholder="Nome do alimento" type="text"/>
+<input class="input" id="novoAlimentoKcal" min="0" placeholder="Calorias (kcal)" step="0.1" type="number"/>
+<input class="input" id="novoAlimentoProteina" min="0" placeholder="Proteína (g)" step="0.1" type="number"/>
+<input class="input" id="novoAlimentoCarbo" min="0" placeholder="Carboidratos (g) — opcional" step="0.1" type="number"/>
+<input class="input" id="novoAlimentoGordura" min="0" placeholder="Gorduras (g) — opcional" step="0.1" type="number"/>
+</div>
+<div class="modal-actions">
+<button class="btn btn-light" id="cancelarNovoAlimentoBtn" type="button">Cancelar</button>
+<button class="btn btn-green" id="salvarNovoAlimentoBtn" type="button">💾 Salvar alimento</button>
+</div>
+</div>
+</div>
+<script src="js/foods.js"></script>
+<script src="js/nutrition.js"></script>
+<script src="js/app.js"></script>
+<script src="js/navigation.js"></script>
+<div class="profit-config-modal" id="profitConfigModal" aria-hidden="true">
+  <div class="profit-config-backdrop" data-close-config="1"></div>
+  <div class="profit-config-panel" role="dialog" aria-modal="true" aria-label="Configuração do PROFIT">
+    <div class="profit-config-head"><div><div class="card-title" style="margin:0;">⚙️ Configuração</div><div class="small-note">Notificações, lembretes, atalhos, metas e backup.</div></div><button class="btn btn-light" id="fecharConfiguracaoBtn" type="button">✕</button></div>
+    <div class="profit-config-body" id="profitConfigBody"></div>
+  </div>
+</div>
+<div class="profit-measure-modal" id="medidasReminderModal" aria-hidden="true">
+  <div class="profit-config-backdrop" data-close-medidas="1"></div>
+  <div class="profit-measure-prompt" role="dialog" aria-modal="true">
+    <div class="card-title">📏 Hora de atualizar suas medidas</div>
+    <div class="small-note">Já faz um tempo desde seu último registro corporal. Quer atualizar agora?</div>
+    <div class="profit-prompt-actions"><button class="btn btn-green" id="registrarMedidasAgoraBtn" type="button">Registrar agora</button><button class="btn btn-light" id="adiarMedidasBtn" type="button">Lembrar depois</button></div>
+  </div>
+</div>
+
+<script src="js/engine.js"></script>
+
+<script src="js/goals.js"></script>
+<div class="reward-modal" id="profitRewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
+  <div class="reward-dialog">
+    <div class="reward-dialog-head"><div><h2 id="rewardModalTitle">🎁 Suas conquistas</h2><div class="small-note" id="rewardModalSub">Escolha uma recompensa desbloqueada.</div></div><button class="reward-close" id="rewardCloseBtn" type="button" aria-label="Fechar">×</button></div>
+    <div class="reward-select-row" id="rewardSelectRow"></div>
+    <div class="story-preview-wrap"><canvas id="profitStoryCanvas" width="1080" height="1920" aria-label="Prévia do Story de conquista"></canvas></div>
+    <div class="story-caption" id="rewardStoryCaption">Imagem gerada no próprio aparelho. Você pode trocar a mensagem e o fundo.</div>
+    <button class="btn btn-light reward-message-btn" id="rewardNewMessageBtn" type="button">🔄 Outra mensagem</button>
+    <button class="btn btn-light reward-message-btn" id="rewardNewBackgroundBtn" type="button">🎨 Trocar fundo</button>
+    <div class="story-modal-actions" style="margin-top:10px"><button class="btn btn-green" id="rewardSaveBtn" type="button">⬇️ Salvar imagem</button><button class="btn btn-dark" id="rewardShareBtn" type="button">📲 Compartilhar</button></div>
+    <div class="small-note" style="margin-top:10px">Dica: se o compartilhamento direto não estiver disponível no navegador, use “Salvar imagem” e publique pelo Instagram ou WhatsApp.</div>
+  </div>
+</div>
+<script src="js/rewards.js"></script>
+
+<script src="js/reminders.js"></script>
+
+<!-- ===== PATCH 5 — CONTROLES DO FILTRO NUTRICIONAL ===== -->
+<script src="js/nutrition-ui.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
+</body>
+</html>
