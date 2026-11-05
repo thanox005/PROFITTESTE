@@ -88,6 +88,29 @@
   <button class="profile-action" id="abrirConfiguracaoBtn" type="button">⚙️ Configuração</button>
 </div>
 </section>
+<section class="card" data-screen="home" id="contaCard">
+<div class="card-title">☁️ Conta e sincronização</div>
+<div id="syncSemConfig" class="small-note" style="display:none">Sincronização na nuvem ainda não configurada. Seus dados ficam salvos neste aparelho.</div>
+<div id="syncDeslogado">
+<div class="small-note">Entre com sua conta Google para não perder seus dados e usar o PROFIT em outros aparelhos.</div>
+<div id="googleBtn" style="margin-top:10px;display:flex;justify-content:center;min-height:44px"></div>
+<div class="small-note" id="syncAviso" style="margin-top:8px"></div>
+</div>
+<div id="syncLogado" style="display:none">
+<div class="profile-mini">
+<div class="profile-mini-main">
+<div class="profile-avatar" id="syncAvatar">?</div>
+<div style="min-width:0"><div class="profile-name" id="syncNome"></div><div class="profile-id" id="syncEmail"></div></div>
+</div>
+</div>
+<div class="small-note" id="syncStatus" style="margin-top:8px"></div>
+<div class="actions" style="margin-top:10px">
+<button class="btn btn-green" id="syncAgoraBtn" type="button">🔄 Sincronizar agora</button>
+<button class="btn btn-light" id="syncSairBtn" type="button">Sair</button>
+</div>
+<button class="btn btn-danger" id="syncExcluirBtn" type="button" style="width:100%;margin-top:8px">🗑️ Excluir minha conta e dados da nuvem</button>
+</div>
+</section>
 <section class="motivation motivation-box" data-screen="home" id="motivacaoCard">
 <div class="motivation-title">
         💚 UM LEMBRETE PARA VOCÊ
@@ -556,29 +579,6 @@
         ⌂ Voltar ao topo
     </button>
 </section>
-<section class="card" data-screen="perfil" id="contaCard">
-<div class="card-title">☁️ Conta e sincronização</div>
-<div id="syncSemConfig" class="small-note" style="display:none">Sincronização na nuvem ainda não configurada. Seus dados ficam salvos neste aparelho.</div>
-<div id="syncDeslogado">
-<div class="small-note">Entre com sua conta Google para não perder seus dados e usar o PROFIT em outros aparelhos.</div>
-<div id="googleBtn" style="margin-top:10px;display:flex;justify-content:center;min-height:44px"></div>
-<div class="small-note" id="syncAviso" style="margin-top:8px"></div>
-</div>
-<div id="syncLogado" style="display:none">
-<div class="profile-mini">
-<div class="profile-mini-main">
-<div class="profile-avatar" id="syncAvatar">?</div>
-<div style="min-width:0"><div class="profile-name" id="syncNome"></div><div class="profile-id" id="syncEmail"></div></div>
-</div>
-</div>
-<div class="small-note" id="syncStatus" style="margin-top:8px"></div>
-<div class="actions" style="margin-top:10px">
-<button class="btn btn-green" id="syncAgoraBtn" type="button">🔄 Sincronizar agora</button>
-<button class="btn btn-light" id="syncSairBtn" type="button">Sair</button>
-</div>
-<button class="btn btn-danger" id="syncExcluirBtn" type="button" style="width:100%;margin-top:8px">🗑️ Excluir minha conta e dados da nuvem</button>
-</div>
-</section>
 <section class="card" data-screen="perfil" id="backupCard">
 <div class="card-title">
         📦 Backup dos dados
@@ -611,6 +611,16 @@
 </div>
 </main>
 <nav aria-label="Navegação principal" class="bottom-nav" id="profitBottomNav"><button aria-label="Início" class="bottom-nav-btn active" data-screen="home" type="button"><span class="bottom-nav-icon">⌂</span><span class="bottom-nav-label">Início</span></button><button aria-label="Alimentação" class="bottom-nav-btn" data-screen="alimentacao" type="button"><span class="bottom-nav-icon">🍽️</span><span class="bottom-nav-label">Alimentação</span></button><button aria-label="Água" class="bottom-nav-btn" data-screen="agua" type="button"><span class="bottom-nav-icon">💧</span><span class="bottom-nav-label">Água</span></button><button aria-label="Evolução" class="bottom-nav-btn" data-screen="evolucao" type="button"><span class="bottom-nav-icon">📊</span><span class="bottom-nav-label">Evolução</span></button><button aria-label="Perfil" class="bottom-nav-btn" data-screen="perfil" type="button"><span class="bottom-nav-icon">👤</span><span class="bottom-nav-label">Perfil</span></button></nav></div>
+<div id="loginGate" role="dialog" aria-modal="true" aria-labelledby="gateTitulo" style="display:none">
+<div class="gate-box">
+<div class="gate-logo">🌱</div>
+<div class="gate-title" id="gateTitulo">Entre com sua conta Google</div>
+<div class="gate-text" id="gateTexto"></div>
+<div class="gate-btn-wrap" id="gateGoogleBtn"></div>
+<button class="btn btn-light" id="gateBackup" type="button" style="width:100%;display:none">📦 Baixar backup deste aparelho</button>
+<div class="gate-links">Seus dados não são apagados. Você pode usar o PROFIT sem internet depois de entrar.</div>
+</div>
+</div>
 <div class="toast" id="toast"></div>
 <!-- =========================================================
      MODAL — PERFIL PROFIT
