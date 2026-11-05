@@ -88,29 +88,10 @@
   <button class="profile-action" id="abrirConfiguracaoBtn" type="button">⚙️ Configuração</button>
 </div>
 </section>
-<section class="card" data-screen="home" id="contaCard">
-<div class="card-title">☁️ Conta e sincronização</div>
-<div id="syncSemConfig" class="small-note" style="display:none">Sincronização na nuvem ainda não configurada. Seus dados ficam salvos neste aparelho.</div>
-<div id="syncDeslogado">
-<div class="small-note">Entre com sua conta Google para não perder seus dados e usar o PROFIT em outros aparelhos.</div>
-<div id="googleBtn" style="margin-top:10px;display:flex;justify-content:center;min-height:44px"></div>
-<div class="small-note" id="syncAviso" style="margin-top:8px"></div>
+<div class="card" data-screen="home" id="modoOfflineAviso" style="display:none">
+<div class="card-title">📴 Modo offline</div>
+<div class="small-note">Seus dados ficam só neste aparelho. Para sincronizar, entre com sua conta Google em Configuração > Conta.</div>
 </div>
-<div id="syncLogado" style="display:none">
-<div class="profile-mini">
-<div class="profile-mini-main">
-<div class="profile-avatar" id="syncAvatar">?</div>
-<div style="min-width:0"><div class="profile-name" id="syncNome"></div><div class="profile-id" id="syncEmail"></div></div>
-</div>
-</div>
-<div class="small-note" id="syncStatus" style="margin-top:8px"></div>
-<div class="actions" style="margin-top:10px">
-<button class="btn btn-green" id="syncAgoraBtn" type="button">🔄 Sincronizar agora</button>
-<button class="btn btn-light" id="syncSairBtn" type="button">Sair</button>
-</div>
-<button class="btn btn-danger" id="syncExcluirBtn" type="button" style="width:100%;margin-top:8px">🗑️ Excluir minha conta e dados da nuvem</button>
-</div>
-</section>
 <section class="motivation motivation-box" data-screen="home" id="motivacaoCard">
 <div class="motivation-title">
         💚 UM LEMBRETE PARA VOCÊ
@@ -617,8 +598,9 @@
 <div class="gate-title" id="gateTitulo">Entre com sua conta Google</div>
 <div class="gate-text" id="gateTexto"></div>
 <div class="gate-btn-wrap" id="gateGoogleBtn"></div>
+<button class="btn btn-light" id="gateOffline" type="button" style="width:100%;margin-bottom:8px">📴 Usar modo offline</button>
 <button class="btn btn-light" id="gateBackup" type="button" style="width:100%;display:none">📦 Baixar backup deste aparelho</button>
-<div class="gate-links">Seus dados não são apagados. Você pode usar o PROFIT sem internet depois de entrar.</div>
+<div class="gate-links">Seus dados não são apagados. No modo offline, seus dados ficam só neste aparelho até você entrar com sua conta.</div>
 </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -679,7 +661,31 @@
   <div class="profit-config-backdrop" data-close-config="1"></div>
   <div class="profit-config-panel" role="dialog" aria-modal="true" aria-label="Configuração do PROFIT">
     <div class="profit-config-head"><div><div class="card-title" style="margin:0;">⚙️ Configuração</div><div class="small-note">Notificações, lembretes, atalhos, metas e backup.</div></div><button class="btn btn-light" id="fecharConfiguracaoBtn" type="button">✕</button></div>
-    <div class="profit-config-body" id="profitConfigBody"></div>
+    <div class="profit-config-body" id="profitConfigBody">
+<section class="card" id="contaCard">
+<div class="card-title">☁️ Conta e sincronização</div>
+<div id="syncSemConfig" class="small-note" style="display:none">Sincronização na nuvem ainda não configurada. Seus dados ficam salvos neste aparelho.</div>
+<div id="syncDeslogado">
+<div class="small-note">Entre com sua conta Google para não perder seus dados e usar o PROFIT em outros aparelhos.</div>
+<div id="googleBtn" style="margin-top:10px;display:flex;justify-content:center;min-height:44px"></div>
+<div class="small-note" id="syncAviso" style="margin-top:8px"></div>
+</div>
+<div id="syncLogado" style="display:none">
+<div class="profile-mini">
+<div class="profile-mini-main">
+<div class="profile-avatar" id="syncAvatar">?</div>
+<div style="min-width:0"><div class="profile-name" id="syncNome"></div><div class="profile-id" id="syncEmail"></div></div>
+</div>
+</div>
+<div class="small-note" id="syncStatus" style="margin-top:8px"></div>
+<div class="actions" style="margin-top:10px">
+<button class="btn btn-green" id="syncAgoraBtn" type="button">🔄 Sincronizar agora</button>
+<button class="btn btn-light" id="syncSairBtn" type="button">Sair</button>
+</div>
+<button class="btn btn-danger" id="syncExcluirBtn" type="button" style="width:100%;margin-top:8px">🗑️ Excluir minha conta e dados da nuvem</button>
+</div>
+</section>
+</div>
   </div>
 </div>
 <div class="profit-measure-modal" id="medidasReminderModal" aria-hidden="true">

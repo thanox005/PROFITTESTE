@@ -192,7 +192,7 @@
   }
 
   /* ---------- Sessão / login ---------- */
-  function limparSessaoLocal() { ESTADO.forEach(del); }
+  function limparSessaoLocal() { ESTADO.forEach(del); try { sessionStorage.removeItem('pfsync_offline'); } catch (e) {} }
   function removerDadosLocais() {
     Object.keys(snapshot()).forEach(function (k) { removeOrig.call(LS, k); });
     del('pfsync_owner');
@@ -243,12 +243,14 @@
   var gsiIniciado = false;
   function temDadosLocais() { return Object.keys(snapshot()).length > 0; }
 
-  /* Login é obrigatório, exceto no modo local: sem internet e com dados já neste aparelho,
-     o app abre normalmente e os dados são enviados à conta no primeiro login. */
+  /* Tela de entrada: aparece ao abrir o app, exceto se a pessoa já entrou
+     ou escolheu o modo offline nesta sessão. */
+  function modoOfflineEscolhido() {
+    try { return sessionStorage.getItem('pfsync_offline') === '1'; } catch (e) { return false; }
+  }
   function precisaLogin() {
     if (!configOk() || logado()) return false;
-    if (navigator.onLine) return true;
-    return !temDadosLocais();
+    return !modoOfflineEscolhido();
   }
 
   function iniciarGoogle(tentativas, alvoId) {
@@ -280,14 +282,16 @@
 
   function atualizarGate() {
     var gate = q('loginGate');
+    var banner = q('modoOfflineAviso');
+    if (banner) banner.style.display = (configOk() && !logado() && modoOfflineEscolhido()) ? 'block' : 'none';
     if (!gate) return;
     var exige = precisaLogin();
     gate.style.display = exige ? 'flex' : 'none';
     if (!exige) return;
     var semNet = !navigator.onLine;
     q('gateTexto').textContent = semNet
-      ? 'Você está sem internet. Para entrar pela primeira vez, conecte-se e tente de novo.'
-      : 'Entre para salvar seus dados na nuvem, sem risco de perdê-los. Os dados deste aparelho serão enviados para a sua conta.';
+      ? 'Sem internet no momento. Você pode usar o modo offline agora e entrar com Google depois.'
+      : 'Entre com sua conta Google para salvar seus dados na nuvem e usar em outros aparelhos.';
     q('gateBackup').style.display = temDadosLocais() ? 'block' : 'none';
     if (!semNet) iniciarGoogle(0, 'gateGoogleBtn');
   }
@@ -301,6 +305,8 @@
     });
     var pb = q('perfilBtn');
     if (pb) pb.addEventListener('click', function () { setTimeout(function () { iniciarGoogle(0); }, 350); });
+    var cb = q('abrirConfiguracaoBtn');
+    if (cb) cb.addEventListener('click', function () { setTimeout(function () { iniciarGoogle(0); }, 350); });
   }
 
   /* ---------- Interface ---------- */
@@ -337,6 +343,7 @@
 
   function ligarBotoes() {
     var b;
+    if ((b = q('gateOffline'))) b.onclick = function () { try { sessionStorage.setItem('pfsync_offline', '1'); } catch (e) {} atualizarGate(); };
     if ((b = q('gateBackup'))) b.onclick = function () { if (typeof window.exportarDados === 'function') window.exportarDados(); };
     if ((b = q('syncAgoraBtn'))) b.onclick = function () { sincronizar('manual'); };
     if ((b = q('syncSairBtn'))) b.onclick = async function () {
