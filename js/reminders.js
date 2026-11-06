@@ -18,6 +18,10 @@
     } catch(e) { return false; }
   }
   function eveningReminder(){
+    if (document.body && document.body.classList.contains('tela-entrada')) {
+      document.addEventListener('profit:entrada-liberada', eveningReminder, {once:true});
+      return;
+    }
     if(new Date().getHours() < 20 || !hasSavedUserData()) return;
     const key = "profit_backup_prompted_" + localDateKey();
     try { if(localStorage.getItem(key) === "1") return; } catch(e) {}
