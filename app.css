@@ -1310,3 +1310,24 @@ body:not(.light) .goal-status.status-over{background:#451a1a;color:#fecaca}
 .gate-text{font-size:13px;color:var(--muted);line-height:1.5}
 .gate-btn-wrap{display:flex;justify-content:center;min-height:44px;margin:16px 0 10px}
 .gate-links{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.4}
+
+/* PROFIT 3.0 — tela de entrada (login ou modo offline) */
+body.tela-entrada .app,body.tela-entrada .toast{visibility:hidden}
+#loginGate .gate-box{width:min(100%,420px)}
+.gate-sub{font-size:13px;color:var(--muted);margin-bottom:6px}
+.gate-opcao{width:100%;border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:12px;background:var(--soft);text-align:left}
+.gate-opcao-titulo{font-weight:bold;font-size:15px;margin-bottom:4px;color:var(--text)}
+.gate-opcao-desc{font-size:12px;color:var(--muted);line-height:1.4;margin-bottom:10px}
+#gateGoogleBtn{display:flex;justify-content:center;min-height:44px}
+
+/* PROFIT 3.0 — tela de entrada fixa, sem rolagem */
+html.tela-entrada,body.tela-entrada{overflow:hidden;height:100%}
+body.tela-entrada .app,body.tela-entrada .toast{display:none}
+#loginGate{position:fixed;inset:0;height:100vh;height:100dvh;overflow:hidden;padding:16px}
+#loginGate .gate-box{max-height:100%;overflow:hidden;padding:18px 16px}
+#loginGate .gate-logo{font-size:36px}
+#loginGate .gate-title{margin:4px 0}
+#loginGate .gate-opcao{padding:12px;margin-top:10px}
+#loginGate .gate-opcao-desc{margin-bottom:8px}
+#loginGate .gate-btn-wrap{margin:8px 0 2px}
+#loginGate .gate-links,#loginGate .gate-text{margin:0}

@@ -102,7 +102,7 @@
     const hoje=dataISO(); const should=dueDate() && snooze!==hoje;
     if(should)setTimeout(openMeasurePrompt,900);
   }
-  function openMeasurePrompt(){if($("medidasReminderModal")){$("medidasReminderModal").classList.add("open");$("medidasReminderModal").setAttribute("aria-hidden","false");}}
+  function openMeasurePrompt(){if(document.body&&document.body.classList.contains('tela-entrada')){document.addEventListener('profit:entrada-liberada',openMeasurePrompt,{once:true});return;}if($("medidasReminderModal")){$("medidasReminderModal").classList.add("open");$("medidasReminderModal").setAttribute("aria-hidden","false");}}
   function closeMeasurePrompt(){if($("medidasReminderModal")){$("medidasReminderModal").classList.remove("open");$("medidasReminderModal").setAttribute("aria-hidden","true");}}
 
   function openConfig(){

@@ -269,7 +269,8 @@
     // Só desenha o botão se o local estiver visível (o Google não desenha em áreas ocultas).
     if (box.offsetParent === null) return;
     box.innerHTML = '';
-    google.accounts.id.renderButton(box, { theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'pill', locale: 'pt-BR' });
+    var claro = !!(document.body && document.body.classList.contains('light'));
+    google.accounts.id.renderButton(box, { theme: claro ? 'outline' : 'filled_black', size: 'large', text: 'continue_with', shape: 'pill', locale: 'pt-BR' });
     setTimeout(function () {
       if (!box.querySelector('iframe') && !logado()) {
         var msg = 'Não foi possível mostrar o botão de login. Confira a conexão e se o endereço do site está autorizado no Google Cloud.';
@@ -284,14 +285,19 @@
     var gate = q('loginGate');
     var banner = q('modoOfflineAviso');
     if (banner) banner.style.display = (configOk() && !logado() && modoOfflineEscolhido()) ? 'block' : 'none';
-    if (!gate) return;
     var exige = precisaLogin();
+    var estavaNaEntrada = !!(document.body && document.body.classList.contains('tela-entrada'));
+    if (document.body) document.body.classList.toggle('tela-entrada', exige);
+    if (document.documentElement) document.documentElement.classList.toggle('tela-entrada', exige);
+    // Avisa os lembretes que o app já pode mostrar avisos (depois do login/modo offline).
+    if (estavaNaEntrada && !exige) document.dispatchEvent(new Event('profit:entrada-liberada'));
+    if (!gate) return;
     gate.style.display = exige ? 'flex' : 'none';
     if (!exige) return;
     var semNet = !navigator.onLine;
     q('gateTexto').textContent = semNet
-      ? 'Sem internet no momento. Você pode usar o modo offline agora e entrar com Google depois.'
-      : 'Entre com sua conta Google para salvar seus dados na nuvem e usar em outros aparelhos.';
+      ? 'Sem internet no momento. Use o modo offline e entre com Google quando tiver conexão.'
+      : '';
     q('gateBackup').style.display = temDadosLocais() ? 'block' : 'none';
     if (!semNet) iniciarGoogle(0, 'gateGoogleBtn');
   }
