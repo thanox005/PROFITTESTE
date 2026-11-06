@@ -595,12 +595,20 @@
 <div id="loginGate" role="dialog" aria-modal="true" aria-labelledby="gateTitulo" style="display:none">
 <div class="gate-box">
 <div class="gate-logo">🌱</div>
-<div class="gate-title" id="gateTitulo">Entre com sua conta Google</div>
+<div class="gate-title" id="gateTitulo">PROFIT</div>
+<div class="gate-sub">Seu diário alimentar, um dia de cada vez.</div>
 <div class="gate-text" id="gateTexto"></div>
+<div class="gate-opcao">
+<div class="gate-opcao-titulo">🔐 Login conta Google</div>
+<div class="gate-opcao-desc">Seus dados ficam salvos na nuvem e aparecem em outros aparelhos.</div>
 <div class="gate-btn-wrap" id="gateGoogleBtn"></div>
-<button class="btn btn-light" id="gateOffline" type="button" style="width:100%;margin-bottom:8px">📴 Usar modo offline</button>
-<button class="btn btn-light" id="gateBackup" type="button" style="width:100%;display:none">📦 Baixar backup deste aparelho</button>
-<div class="gate-links">Seus dados não são apagados. No modo offline, seus dados ficam só neste aparelho até você entrar com sua conta.</div>
+</div>
+<div class="gate-opcao">
+<div class="gate-opcao-titulo">📴 Modo offline</div>
+<div class="gate-opcao-desc">Os dados ficam só neste aparelho. Você pode entrar com Google depois, em Configuração.</div>
+<button class="btn btn-dark" id="gateOffline" type="button" style="width:100%">Entrar em modo offline</button>
+</div>
+<button class="btn btn-light" id="gateBackup" type="button" style="width:100%;margin-top:12px;display:none">📦 Baixar backup deste aparelho</button>
 </div>
 </div>
 <div class="toast" id="toast"></div>

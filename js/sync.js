@@ -192,7 +192,7 @@
   }
 
   /* ---------- Sessão / login ---------- */
-  function limparSessaoLocal() { ESTADO.forEach(del); }
+  function limparSessaoLocal() { ESTADO.forEach(del); try { sessionStorage.removeItem('pfsync_offline'); } catch (e) {} }
   function removerDadosLocais() {
     Object.keys(snapshot()).forEach(function (k) { removeOrig.call(LS, k); });
     del('pfsync_owner');
@@ -241,12 +241,24 @@
   }
 
   var gsiIniciado = false;
-  function iniciarGoogle(tentativas) {
+  function temDadosLocais() { return Object.keys(snapshot()).length > 0; }
+
+  /* Tela de entrada: aparece ao abrir o app, exceto se a pessoa já entrou
+     ou escolheu o modo offline nesta sessão. */
+  function modoOfflineEscolhido() {
+    try { return sessionStorage.getItem('pfsync_offline') === '1'; } catch (e) { return false; }
+  }
+  function precisaLogin() {
+    if (!configOk() || logado()) return false;
+    return !modoOfflineEscolhido();
+  }
+
+  function iniciarGoogle(tentativas, alvoId) {
     if (logado() || !configOk()) return;
-    var box = q('googleBtn');
+    var box = q(alvoId || 'googleBtn');
     if (!box) return;
     if (!(window.google && google.accounts && google.accounts.id)) {
-      if (tentativas < 40) { setTimeout(function () { iniciarGoogle(tentativas + 1); }, 500); }
+      if (tentativas < 40) setTimeout(function () { iniciarGoogle(tentativas + 1, alvoId); }, 500);
       else setAviso('Não foi possível carregar o login do Google. Verifique a internet.');
       return;
     }
@@ -254,28 +266,48 @@
       google.accounts.id.initialize({ client_id: CFG.clientId, callback: aoReceberCredencial, auto_select: false });
       gsiIniciado = true;
     }
-    // Se a aba Perfil estiver oculta, o Google não consegue desenhar o botão.
-    // Ele é desenhado quando a aba for aberta (ver ligarAbaPerfil).
+    // Só desenha o botão se o local estiver visível (o Google não desenha em áreas ocultas).
     if (box.offsetParent === null) return;
     box.innerHTML = '';
     google.accounts.id.renderButton(box, { theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'pill', locale: 'pt-BR' });
     setTimeout(function () {
       if (!box.querySelector('iframe') && !logado()) {
-        setAviso('Não foi possível mostrar o botão de login. Confira se o endereço do site está autorizado no Google Cloud e tente de novo.');
-        console.warn('PROFIT: botão do Google não apareceu. Origem atual:', location.origin);
+        var msg = 'Não foi possível mostrar o botão de login. Confira a conexão e se o endereço do site está autorizado no Google Cloud.';
+        setAviso(msg);
+        if (alvoId && q('gateTexto')) q('gateTexto').textContent = msg;
+        console.warn('PROFIT: botão do Google não apareceu. Origem:', location.origin);
       }
     }, 2500);
+  }
+
+  function atualizarGate() {
+    var gate = q('loginGate');
+    var banner = q('modoOfflineAviso');
+    if (banner) banner.style.display = (configOk() && !logado() && modoOfflineEscolhido()) ? 'block' : 'none';
+    var exige = precisaLogin();
+    if (document.body) document.body.classList.toggle('tela-entrada', exige);
+    if (!gate) return;
+    gate.style.display = exige ? 'flex' : 'none';
+    if (!exige) return;
+    var semNet = !navigator.onLine;
+    q('gateTexto').textContent = semNet
+      ? 'Sem internet no momento. Use o modo offline e entre com Google quando tiver conexão.'
+      : '';
+    q('gateBackup').style.display = temDadosLocais() ? 'block' : 'none';
+    if (!semNet) iniciarGoogle(0, 'gateGoogleBtn');
   }
 
   function ligarAbaPerfil() {
     var abas = document.querySelectorAll('#profitBottomNav .bottom-nav-btn');
     Array.prototype.forEach.call(abas, function (b) {
       b.addEventListener('click', function () {
-        if (b.dataset.screen === 'perfil') setTimeout(function () { iniciarGoogle(0); }, 350);
+        if (b.dataset.screen === 'home' || b.dataset.screen === 'perfil') setTimeout(function () { iniciarGoogle(0); }, 350);
       });
     });
     var pb = q('perfilBtn');
     if (pb) pb.addEventListener('click', function () { setTimeout(function () { iniciarGoogle(0); }, 350); });
+    var cb = q('abrirConfiguracaoBtn');
+    if (cb) cb.addEventListener('click', function () { setTimeout(function () { iniciarGoogle(0); }, 350); });
   }
 
   /* ---------- Interface ---------- */
@@ -291,6 +323,7 @@
       : '☁️ Ainda não sincronizado.';
   }
   function renderUI() {
+    atualizarGate();
     var off = q('syncDeslogado'), on = q('syncLogado'), cfg = q('syncSemConfig');
     if (!off || !on) return;
     if (!configOk()) { off.style.display = 'none'; on.style.display = 'none'; if (cfg) cfg.style.display = 'block'; return; }
@@ -311,6 +344,8 @@
 
   function ligarBotoes() {
     var b;
+    if ((b = q('gateOffline'))) b.onclick = function () { try { sessionStorage.setItem('pfsync_offline', '1'); } catch (e) {} atualizarGate(); };
+    if ((b = q('gateBackup'))) b.onclick = function () { if (typeof window.exportarDados === 'function') window.exportarDados(); };
     if ((b = q('syncAgoraBtn'))) b.onclick = function () { sincronizar('manual'); };
     if ((b = q('syncSairBtn'))) b.onclick = async function () {
       if (!confirm('Sair da conta? Seus dados continuam salvos na nuvem.')) return;
@@ -351,9 +386,10 @@
     if (document.visibilityState === 'hidden') { clearTimeout(timer); sincronizar('auto'); }
     else if (Date.now() - Number(get('pfsync_last') || 0) > 60000) sincronizar('abrir');
   });
-  window.addEventListener('online', function () { sincronizar('abrir'); });
+  window.addEventListener('online', function () { atualizarGate(); sincronizar('abrir'); });
+  window.addEventListener('offline', function () { atualizarGate(); });
 
-  window.PROFIT_SYNC = { sincronizar: sincronizar, logado: logado };
+  window.PROFIT_SYNC = { sincronizar: sincronizar, logado: logado, precisaLogin: precisaLogin };
 
   ligarBotoes();
   ligarAbaPerfil();
