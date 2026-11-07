@@ -100,3 +100,17 @@
   }
   atualizarBarrasMacros();
 })();
+
+
+/* PROFIT 3.0 — histórico recolhido atrás de um botão */
+(function(){
+  var btn=document.getElementById('histToggle');
+  var lista=document.getElementById('historico');
+  if(!btn||!lista) return;
+  lista.style.display='none';
+  btn.onclick=function(){
+    var aberto=lista.style.display!=='none';
+    lista.style.display=aberto?'none':'';
+    btn.textContent=aberto?'📅 Ver histórico':'▲ Ocultar histórico';
+  };
+})();
