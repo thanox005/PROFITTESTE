@@ -901,37 +901,16 @@ function remover(id){
 
 const refeicoes = {
 
-    cafe:{
-        nome:"☀️ Café da manhã"
-    },
+    cafe:{ nome:"☀️ Café da manhã" },
+    lanche_manha:{ nome:"🍎 Lanche da manhã" },
+    almoco:{ nome:"🍛 Almoço" },
+    lanche_tarde:{ nome:"🥪 Lanche da tarde" },
+    jantar:{ nome:"🌙 Jantar" },
+    lanche_noite:{ nome:"🌜 Lanche da noite" },
+    outros:{ nome:"🍽️ Outros" },
 
-    almoco:{
-        nome:"🍛 Almoço"
-    },
-
-    lanche:{
-        nome:"🍎 Lanche"
-    },
-
-    lanche_manha:{
-        nome:"🍎 Lanche da manhã"
-    },
-
-    lanche_tarde:{
-        nome:"🥪 Lanche da tarde"
-    },
-
-    jantar:{
-        nome:"🌙 Jantar"
-    },
-
-    lanche_noite:{
-        nome:"🌜 Lanche da noite"
-    },
-
-    outros:{
-        nome:"🍽️ Outros"
-    }
+    /* Registros antigos marcados como "Lanche": continuam aparecendo, sem perda. */
+    lanche:{ nome:"🍎 Lanche" }
 
 };
 
@@ -1125,7 +1104,7 @@ function renderDiario(){
                     </span>
 
                     <span class="meal-total">
-                        ${numero(total)} kcal
+                        ${numero(total)} kcal · P ${numero(lista.reduce((s,i)=>s+Number(i.p||0),0))}g · C ${numero(lista.reduce((s,i)=>s+Number(i.c||0),0))}g · G ${numero(lista.reduce((s,i)=>s+Number(i.g||0),0))}g
                     </span>
 
                 </div>

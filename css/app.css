@@ -1331,3 +1331,15 @@ body.tela-entrada .app,body.tela-entrada .toast{display:none}
 #loginGate .gate-opcao-desc{margin-bottom:8px}
 #loginGate .gate-btn-wrap{margin:8px 0 2px}
 #loginGate .gate-links,#loginGate .gate-text{margin:0}
+
+/* PROFIT 3.0 — estimativa de prazo */
+.prazo-box{margin-top:10px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--soft)}
+.prazo-resultado{margin-top:10px;font-size:12px;line-height:1.5;color:var(--muted)}
+.prazo-resultado.ok{color:var(--accent-text)}
+.prazo-resultado.atencao{color:#b45309}
+.prazo-resultado.bloqueado{color:#b91c1c}
+
+/* PROFIT 3.0 — macros no diário e barras do "Seu dia" */
+.meal-title{flex-wrap:wrap;gap:4px}
+.mbar{height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:6px}
+.mbar span{display:block;height:100%;width:0;background:var(--green);border-radius:99px;transition:width .35s ease}

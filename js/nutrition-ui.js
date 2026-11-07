@@ -71,3 +71,32 @@
 
   montar();
 })();
+
+
+/* PROFIT 3.0 — barras finas de proteína, carboidrato e gordura contra a meta */
+(function(){
+  function metas(){
+    try{
+      var p=JSON.parse(localStorage.getItem('profit_nutrition_profile_v31')||'{}');
+      return {p:Number(p.proteina)||0, c:Number(p.carbo)||0, g:Number(p.gordura)||0};
+    }catch(e){ return {p:0,c:0,g:0}; }
+  }
+  function barra(id,valor,meta){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.style.width = meta>0 ? Math.min(100, valor/meta*100).toFixed(1)+'%' : '0%';
+  }
+  function atualizarBarrasMacros(){
+    var itens=(typeof diario==='function')?diario():[];
+    var t={p:0,c:0,g:0};
+    itens.forEach(function(i){ t.p+=Number(i.p||0); t.c+=Number(i.c||0); t.g+=Number(i.g||0); });
+    var m=metas();
+    barra('barP',t.p,m.p); barra('barC',t.c,m.c); barra('barG',t.g,m.g);
+  }
+  window.atualizarBarrasMacros=atualizarBarrasMacros;
+  var original=window.atualizarResumo;
+  if(typeof original==='function'){
+    window.atualizarResumo=function(){ var r=original.apply(this,arguments); atualizarBarrasMacros(); return r; };
+  }
+  atualizarBarrasMacros();
+})();

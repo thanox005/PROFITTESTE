@@ -14,7 +14,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>PROFIT 3.0</title>
-<link href="css/app.css" rel="stylesheet"/>
+<link href="css/app.css?v=9" rel="stylesheet"/>
 
 
 <!-- ===== PATCH 1 — CSS DO FILTRO NUTRICIONAL ===== -->
@@ -67,6 +67,13 @@
   </div>
   <button class="btn btn-green" id="salvarPerfilDadosBtn" type="button">💾 Salvar informações</button>
   <div class="small-note" id="perfilDadosStatus"></div>
+<div class="prazo-box" id="prazoBox">
+<div class="card-title" style="margin-bottom:4px">⏱️ Estimativa de prazo</div>
+<label class="small-note" style="display:block">Prazo em meses
+<input class="input" id="perfilPrazoMeses" type="number" min="0.5" max="24" step="0.5" placeholder="Ex.: 3"></label>
+<button class="btn btn-light" id="verificarPrazoBtn" type="button" style="width:100%;margin-top:8px">🔎 Verificar prazo</button>
+<div id="prazoResultado" class="prazo-resultado"></div>
+</div>
 </div>
 <div class="profit-nutrition-box" id="profitNutritionBox">
   <div class="card-title" style="margin-bottom:6px;">🤖 Recomendação do PROFIT</div>
@@ -224,6 +231,7 @@
 <span id="totalP">0</span>
 <small>g</small>
 </div>
+<div class="mbar"><span id="barP"></span></div>
 </div>
 <div class="summary-item">
 <div class="summary-label">
@@ -233,6 +241,7 @@
 <span id="totalC">0</span>
 <small>g</small>
 </div>
+<div class="mbar"><span id="barC"></span></div>
 </div>
 <div class="summary-item">
 <div class="summary-label">
@@ -242,6 +251,7 @@
 <span id="totalG">0</span>
 <small>g</small>
 </div>
+<div class="mbar"><span id="barG"></span></div>
 </div>
 </div>
 </section>
@@ -578,7 +588,7 @@
     </div>
 </section>
 <div class="footer">
-    PROFIT 3.0 • Consistência antes da perfeição 💚
+    PROFIT 3.0 (v9) • Consistência antes da perfeição 💚
 </div>
 <div aria-label="Atalhos por gesto" class="swipe-shortcut" id="swipeShortcut" role="slider" tabindex="0">
 <div aria-hidden="true" class="swipe-directions">
@@ -661,10 +671,10 @@
 </div>
 </div>
 </div>
-<script src="js/foods.js"></script>
-<script src="js/nutrition.js"></script>
-<script src="js/app.js"></script>
-<script src="js/navigation.js"></script>
+<script src="js/foods.js?v=9"></script>
+<script src="js/nutrition.js?v=9"></script>
+<script src="js/app.js?v=9"></script>
+<script src="js/navigation.js?v=9"></script>
 <div class="profit-config-modal" id="profitConfigModal" aria-hidden="true">
   <div class="profit-config-backdrop" data-close-config="1"></div>
   <div class="profit-config-panel" role="dialog" aria-modal="true" aria-label="Configuração do PROFIT">
@@ -705,9 +715,10 @@
   </div>
 </div>
 
-<script src="js/engine.js"></script>
+<script src="js/engine.js?v=9"></script>
 
-<script src="js/goals.js"></script>
+<script src="js/goals.js?v=9"></script>
+<script src="js/estimativa.js?v=9"></script>
 <div class="reward-modal" id="profitRewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
   <div class="reward-dialog">
     <div class="reward-dialog-head"><div><h2 id="rewardModalTitle">🎁 Suas conquistas</h2><div class="small-note" id="rewardModalSub">Escolha uma recompensa desbloqueada.</div></div><button class="reward-close" id="rewardCloseBtn" type="button" aria-label="Fechar">×</button></div>
@@ -720,14 +731,14 @@
     <div class="small-note" style="margin-top:10px">Dica: se o compartilhamento direto não estiver disponível no navegador, use “Salvar imagem” e publique pelo Instagram ou WhatsApp.</div>
   </div>
 </div>
-<script src="js/rewards.js"></script>
+<script src="js/rewards.js?v=9"></script>
 
-<script src="js/reminders.js"></script>
+<script src="js/reminders.js?v=9"></script>
 
 <!-- ===== PATCH 5 — CONTROLES DO FILTRO NUTRICIONAL ===== -->
-<script src="js/nutrition-ui.js"></script>
+<script src="js/nutrition-ui.js?v=9"></script>
 
-<script src="js/config.js"></script>
-<script src="js/sync.js"></script>
+<script src="js/config.js?v=9"></script>
+<script src="js/sync.js?v=9"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /* PROFIT — Service Worker (offline).
    Ao publicar uma nova versão do app, aumente CACHE_VERSION (ex.: profit-v4). */
-const CACHE_VERSION = "profit-v8";
+const CACHE_VERSION = "profit-v10";
 const ARQUIVOS = [
   "./",
   "./index.html",
@@ -12,6 +12,7 @@ const ARQUIVOS = [
   "./js/navigation.js",
   "./js/engine.js",
   "./js/goals.js",
+  "./js/estimativa.js",
   "./js/rewards.js",
   "./js/reminders.js",
   "./js/nutrition-ui.js",
