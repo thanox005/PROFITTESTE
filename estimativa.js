@@ -14,11 +14,10 @@
   function lerPerfil() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
   function gravarPerfil(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
 
-  function tdeeEstimado(perfil, sexo, idade, altura, peso) {
-    if (perfil.tdee) return perfil.tdee;
-    if (!sexo || !idade || !altura || !peso) return 0;
-    var bmr = (10 * peso) + (6.25 * altura) - (5 * idade) + (sexo === 'm' ? 5 : -161);
-    return bmr * 1.55;
+  function tdeeEstimado(d) {
+    if (!d.sexo || !d.idade || !d.altura || !d.pesoAtual) return 0;
+    var bmr = (10 * d.pesoAtual) + (6.25 * d.altura) - (5 * d.idade) + (d.sexo === 'm' ? 5 : -161);
+    return bmr * (d.atividade || 1.55);
   }
 
   /* Regra central: retorna status 'ok' | 'atencao' | 'bloqueado' | 'incompleto' */
@@ -37,7 +36,7 @@
     r.ajusteDia = Math.round(r.ritmo * KCAL_KG / 7) * (tipo === 'ganhar' ? 1 : -1);
     r.mesesMin = Math.ceil((Math.abs(r.delta) / (r.limite / 100 * d.pesoAtual)) / MESES_SEMANA * 2) / 2;
 
-    var tdee = tdeeEstimado(d.perfil, d.sexo, d.idade, d.altura, d.pesoAtual);
+    var tdee = tdeeEstimado(d);
     var ingestao = tdee + r.ajusteDia;
     r.ingestao = Math.round(ingestao);
 
@@ -95,6 +94,7 @@
       sexo: ($('perfilSexo') || {}).value || perfil.sexo || '',
       idade: num('perfilIdade') || Number(perfil.idade || 0),
       altura: num('perfilAltura') || Number(perfil.altura || 0),
+      atividade: Number(($('perfilAtividade') || {}).value) || Number(perfil.atividade) || 1.55,
       perfil: perfil
     };
   }

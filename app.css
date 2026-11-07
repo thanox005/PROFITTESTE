@@ -1331,3 +1331,28 @@ body.tela-entrada .app,body.tela-entrada .toast{display:none}
 #loginGate .gate-opcao-desc{margin-bottom:8px}
 #loginGate .gate-btn-wrap{margin:8px 0 2px}
 #loginGate .gate-links,#loginGate .gate-text{margin:0}
+
+/* PROFIT 3.0 — estimativa de prazo */
+.prazo-box{margin-top:10px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--soft)}
+.prazo-resultado{margin-top:10px;font-size:12px;line-height:1.5;color:var(--muted)}
+.prazo-resultado.ok{color:var(--accent-text)}
+.prazo-resultado.atencao{color:#b45309}
+.prazo-resultado.bloqueado{color:#b91c1c}
+
+/* PROFIT 3.0 — macros no diário e barras do "Seu dia" */
+.meal-title{flex-wrap:wrap;gap:4px}
+.mbar{height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:6px}
+.mbar span{display:block;height:100%;width:0;background:var(--green);border-radius:99px;transition:width .35s ease}
+
+/* PROFIT 3.0 — cabeçalho acompanha o tema */
+body{--header-bg:#0f172a;--header-text:#f8fafc;--header-sub:#94a3b8;}
+body.light,html.light,html[data-theme="light"],body[data-theme="light"]{--header-bg:#ffffff;--header-text:#172033;--header-sub:#64748b;}
+.header{background:var(--header-bg);color:var(--header-text);box-shadow:0 4px 18px rgba(15,23,42,.06)}
+.brand p{color:var(--header-sub)}
+.theme-btn{background:rgba(255,255,255,.12);color:var(--header-text);border:1px solid rgba(255,255,255,.12)}
+body.light .theme-btn,html.light .theme-btn,html[data-theme="light"] .theme-btn{background:rgba(15,23,42,.06);border-color:rgba(15,23,42,.12)}
+
+/* PROFIT 3.0 — nível de atividade + salvar lado a lado */
+.atividade-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:6px}
+.atividade-row .btn{width:auto;margin-top:0;padding:10px 12px;white-space:nowrap}
+.atividade-row .input{margin-top:4px}
