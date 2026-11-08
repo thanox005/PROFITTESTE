@@ -237,7 +237,7 @@
     var sel = $('perfilAtividade');
     if (sel && p.atividade) sel.value = String(p.atividade);
     var b = $('calcularMetasBtn');
-    if (b) b.onclick = calcularUI;
+    // O botão é ligado no engine.js (cálculo único). Aqui ficam só alertas e salvar.
     ligarSalvar();
     if (p.kcal) renderTargets({
       bmr: p.bmr, tdee: p.tdee, ajuste: p.ajuste || 0, kcal: p.kcal, objetivo: p.objetivo || 'manter',

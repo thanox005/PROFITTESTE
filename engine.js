@@ -30,107 +30,104 @@
     renderTargets();
   }
 
+  /* ===== RECOMENDAÇÃO (v16) — único cálculo do app ===== */
+  const LIMITE_RITMO = 0.75;           // % do peso por semana (ganho e perda)
+  function statusRec(tipo, texto){
+    const el=$("recStatus"); if(!el) return;
+    el.className="rec-status "+tipo; el.textContent=texto;
+  }
+  function bloquear(msg){
+    const note=$("profitNutritionNote"); if(note) note.innerHTML="<b>⛔ "+msg+"</b>";
+    statusRec("bloqueado","⛔ "+msg);
+  }
+  function fmtN(v,d){ return Number(v||0).toLocaleString("pt-BR",{maximumFractionDigits:d==null?0:d}); }
+
   function calcular(){
-    const sexo=$("nutSexo")?.value||"", idade=n($("nutIdade")?.value), altura=n($("nutAltura")?.value), peso=n($("nutPeso")?.value), atividade=n($("nutAtividade")?.value)||1.55, objetivo=$("nutObjetivo")?.value||"manter";
-    if(!sexo || !idade || !altura || !peso){ toast("Preencha sexo, idade, altura e peso para calcular suas metas."); return; }
-    const bmr = sexo==="m" ? (10*peso)+(6.25*altura)-(5*idade)+5 : (10*peso)+(6.25*altura)-(5*idade)-161;
-    const tdee = bmr*atividade;
-    const ajuste = objetivo==="emagrecer" ? .85 : objetivo==="ganhar" ? 1.10 : 1;
-    const kcal = Math.max(1200,Math.round(tdee*ajuste/10)*10);
-    const protKg = objetivo==="emagrecer" ? 1.8 : 1.8;
-    const proteina = peso*protKg;
-    const gordura = peso*.8;
-    const carbo = Math.max(0,(kcal-(proteina*4)-(gordura*9))/4);
-    const agua = (peso*35)/1000;
-    const fibras = kcal/1000*14;
-    nutrition={sexo,idade,altura,peso,atividade,objetivo,bmr,tdee,kcal,proteina,gordura,carbo,agua,fibras,atualizado:dataISO()};
+    const sexo=$("perfilSexo")?.value||"";
+    const idade=n($("perfilIdade")?.value), altura=n($("perfilAltura")?.value), peso=n($("perfilPesoAtual")?.value);
+    const pesoMeta=n($("perfilPesoMeta")?.value), meses=n($("perfilPrazoMeses")?.value);
+    const atividade=Number($("perfilAtividade")?.value)||1.55;
+
+    if(!sexo||!idade||!altura||!peso){ bloquear("Preencha sexo, idade, altura e peso atual no Perfil."); return; }
+
+    // 1) objetivo automático pelo peso desejado
+    const delta = pesoMeta ? pesoMeta-peso : 0;
+    const objetivo = Math.abs(delta)<0.05 ? "manter" : (delta>0 ? "ganhar" : "emagrecer");
+    if($("perfilObjetivo")) $("perfilObjetivo").value=objetivo;
+
+    // 2) ajuste pelo prazo (com verificação de segurança)
+    let ajuste=0;
+    if(objetivo!=="manter"){
+      if(!meses){ bloquear("Informe o prazo em meses para calcular a meta."); return; }
+      const semanas=meses*4.345;
+      const pct=(Math.abs(delta)/semanas)/peso*100;
+      if(pct>LIMITE_RITMO){
+        const minMeses=Math.ceil((Math.abs(delta)/(LIMITE_RITMO/100*peso))/4.345*2)/2;
+        bloquear("Plano bloqueado: ritmo de "+fmtN(pct,2)+"% do peso por semana (limite "+fmtN(LIMITE_RITMO,2)+"%). Prazo mínimo seguro: "+fmtN(minMeses,1)+" meses. A meta não foi alterada.");
+        return;
+      }
+      ajuste=Math.round(delta*7700/(meses*30.4));
+    }
+
+    // 3) calorias: TDEE (Mifflin-St Jeor × atividade) + ajuste
+    const bmr=(10*peso)+(6.25*altura)-(5*idade)+(sexo==="m"?5:-161);
+    const tdee=Math.round(bmr*atividade);
+    const kcal=tdee+ajuste;
+    const minKcal=sexo==="f"?1200:1500;
+    if(kcal<minKcal){ bloquear("Calorias ficariam em "+fmtN(kcal)+" kcal, abaixo do mínimo seguro de "+fmtN(minKcal)+" kcal. A meta não foi alterada."); return; }
+
+    // 4) macros
+    const kgProt = atividade<=1.375 ? 1.4 : (atividade<=1.55 ? 1.6 : 1.8);
+    const proteina = peso*(objetivo==="ganhar" ? Math.max(1.8,kgProt) : kgProt);
+    const gordMin = peso*0.8;
+    let gordura = Math.max(gordMin, kcal*0.25/9);
+    let carbo = (kcal-proteina*4-gordura*9)/4;
+    if(carbo<100){
+      const alvo=(kcal-proteina*4-400)/9;
+      gordura=Math.max(gordMin,Math.min(gordura,alvo));
+      carbo=(kcal-proteina*4-gordura*9)/4;
+    }
+    const agua=peso*35/1000, fibras=kcal/1000*14;
+
+    // 5) guarda sem apagar os dados do Perfil (prazo, plano etc.)
+    let base={}; try{ base=JSON.parse(localStorage.getItem(NKEY)||"{}"); }catch(e){}
+    nutrition=Object.assign(base,{sexo,idade,altura,peso,atividade,objetivo,meses,bmr,tdee,ajuste,kcal,proteina,gordura,carbo,agua,fibras,atualizado:dataISO()});
     saveNutrition();
-    if(typeof meta!=="undefined"){ meta=kcal; localStorage.setItem("nutri_meta",meta); }
-    if(typeof metaAgua!=="undefined"){ metaAgua=Math.max(.5,Number(agua.toFixed(1))); localStorage.setItem("nutri_meta_agua",metaAgua); }
-    if($("meta")) $("meta").value=Math.round(kcal);
-    if($("waterGoalInput")) $("waterGoalInput").value=Number(agua.toFixed(1));
+
+    // 6) aplica a meta no app
+    meta=kcal; localStorage.setItem("nutri_meta",String(kcal));
+    if($("meta")) $("meta").value=kcal;
+    const aguaL=Math.max(0.5,Number(agua.toFixed(1)));
+    metaAgua=aguaL; localStorage.setItem("nutri_meta_agua",String(aguaL));
+    if($("waterGoalInput")) $("waterGoalInput").value=aguaL;
     if(typeof atualizarTudo==="function") atualizarTudo();
     if(typeof renderAgua==="function") renderAgua();
     renderTargets();
-    toast("Metas calculadas e salvas. 🎯");
+    statusRec("ok","✅ Meta atualizada: "+fmtN(kcal)+" kcal/dia"+(pesoMeta?" (peso desejado "+fmtN(pesoMeta,1)+" kg)":"")+".");
+    if(typeof toast==="function") toast("Recomendação atualizada. 🎯");
   }
 
   function renderTargets(){
-    const el=$("profitTargetGrid"), note=$("profitNutritionNote"); if(!el)return;
-    if(!nutrition.kcal){el.innerHTML="";if(note)note.textContent="";return;}
-    const items=[["🔥",fmt(nutrition.kcal),"kcal / dia"],["🥩",fmt(nutrition.proteina,0)+" g","proteína"],["🍚",fmt(nutrition.carbo,0)+" g","carboidratos"],["🥑",fmt(nutrition.gordura,0)+" g","gorduras"],["💧",fmt(nutrition.agua,1)+" L","água"],["🌾",fmt(nutrition.fibras,0)+" g","fibras"]];
-    el.innerHTML=items.map(x=>`<div class="profit-target"><span>${x[0]} ${x[2]}</span><b>${x[1]}</b></div>`).join("");
-    if(note) note.textContent="Estimativa: BMR " + fmt(nutrition.bmr) + " kcal · TDEE " + fmt(nutrition.tdee) + " kcal. Ajuste por objetivo aplicado. Não substitui avaliação profissional.";
-  }
-
-  function preencherMedidas(){
-    const d=dataISO(), m=medidas[d]||{};
-    const map={medPeso:"peso",medCintura:"cintura",medAbdomen:"abdomen",medPeito:"peito",medBracoD:"bracoD",medBracoE:"bracoE",medQuadril:"quadril",medCoxaD:"coxaD",medCoxaE:"coxaE",medPantD:"pantD",medPantE:"pantE"};
-    Object.keys(map).forEach(id=>{if($(id))$(id).value=m[map[id]]??"";});
-    renderMedidas();
-  }
-  function salvarMedidas(){
-    const d=dataISO(), map={medPeso:"peso",medCintura:"cintura",medAbdomen:"abdomen",medPeito:"peito",medBracoD:"bracoD",medBracoE:"bracoE",medQuadril:"quadril",medCoxaD:"coxaD",medCoxaE:"coxaE",medPantD:"pantD",medPantE:"pantE"};
-    const obj={}; let count=0; Object.keys(map).forEach(id=>{const v=n($(id)?.value);if(v>0){obj[map[id]]=v;count++;}});
-    if(!count){toast("Informe pelo menos uma medida.");return;}
-    medidas[d]=obj; saveMedidas();
-    if(obj.peso && typeof pesos!=="undefined"){pesos[d]=obj.peso; if(typeof salvarPesos==="function") salvarPesos(); if(typeof pesoDaData==="function") pesoDaData();}
-    renderMedidas(); atualizarLembrete(); closeMeasurePrompt(); toast("Medidas salvas. 📏");
-  }
-  function delta(key,currentDate){
-    const dates=Object.keys(medidas).filter(d=>d<=currentDate&&medidas[d]&&medidas[d][key]!=null).sort();
-    if(dates.length<2)return null; const a=n(medidas[dates[dates.length-2]][key]), b=n(medidas[dates[dates.length-1]][key]); return b-a;
-  }
-  function renderMedidas(){
-    const hist=$("medidasHistorico"), status=$("medidasStatus"); if(!hist)return;
-    const dates=Object.keys(medidas).sort().reverse();
-    if(status){ status.textContent=dates.length?"Último registro: "+dateBR(dates[0]):"Nenhum registro corporal ainda."; }
-    hist.innerHTML=dates.slice(0,5).map(d=>{
-      const m=medidas[d], parts=[];
-      [["Peso","peso","kg"],["Cintura","cintura","cm"],["Abdômen","abdomen","cm"],["Peito","peito","cm"],["Braço D","bracoD","cm"],["Quadril","quadril","cm"]].forEach(x=>{if(m[x[1]]!=null){let ds=delta(x[1],d);parts.push(`<span>${x[0]}: <strong>${fmt(m[x[1]],1)} ${x[2]}</strong>${ds!==null?` <em class="profit-delta">${ds>0?"+":""}${fmt(ds,1)}</em>`:""}</span>`);}});
-      return `<div class="profit-measure-row"><strong>${dateBR(d)}</strong><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:5px">${parts.join("")||"Sem valores"}</div></div>`;
-    }).join("") || `<div class="empty">Registre sua primeira avaliação corporal.</div>`;
-  }
-
-  function dueDate(){
-    const dates=Object.keys(medidas).sort(); if(!dates.length)return true;
-    const last=dateObj(dates[dates.length-1]); const freq=localStorage.getItem("profit_medidas_freq")||"15";
-    const dias=freq==="30"?30:15; return Math.floor((dateObj(dataISO())-last)/86400000)>=dias;
-  }
-  function atualizarLembrete(){
-    const last=Object.keys(medidas).sort().pop()||""; const snooze=localStorage.getItem(RKEY)||"";
-    const hoje=dataISO(); const should=dueDate() && snooze!==hoje;
-    if(should)setTimeout(openMeasurePrompt,900);
-  }
-  function openMeasurePrompt(){if(document.body&&document.body.classList.contains('tela-entrada')){document.addEventListener('profit:entrada-liberada',openMeasurePrompt,{once:true});return;}if($("medidasReminderModal")){$("medidasReminderModal").classList.add("open");$("medidasReminderModal").setAttribute("aria-hidden","false");}}
-  function closeMeasurePrompt(){if($("medidasReminderModal")){$("medidasReminderModal").classList.remove("open");$("medidasReminderModal").setAttribute("aria-hidden","true");}}
-
-  function openConfig(){
-    const modal=$("profitConfigModal"), body=$("profitConfigBody"); if(!modal||!body)return;
-    ["configuracaoCard","backupCard"].forEach(id=>{const el=$(id);if(el&&!body.contains(el))body.appendChild(el);});
-    modal.classList.add("open");modal.setAttribute("aria-hidden","false"); renderShortcutSetting();
-  }
-  function closeConfig(){const modal=$("profitConfigModal");if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");}}
-  function renderShortcutSetting(){
-    const c=$("configuracaoCard"); if(!c)return;
-    let row=$("profitShortcutToggleRow"); if(!row){
-      row=document.createElement("div");row.id="profitShortcutToggleRow";row.className="switch-row";row.innerHTML=`<div class="switch-copy"><div class="switch-title">Atalhos por gesto</div><div class="switch-sub">Mostra o botão flutuante e permite deslizar para abrir atalhos.</div></div><label class="switch"><input id="profitShortcutToggle" type="checkbox"><span class="slider"></span></label>`;
-      c.insertBefore(row,c.firstChild);
-      $("profitShortcutToggle").addEventListener("change",e=>{localStorage.setItem(SKEY,e.target.checked?"1":"0");applyShortcutVisibility();toast(e.target.checked?"Atalhos ativados.":"Atalhos desativados.");});
+    const el=$("profitTargetGrid"), note=$("profitNutritionNote");
+    if(!el) return;
+    if(!nutrition.kcal){ el.innerHTML=""; if(note) note.textContent=""; return; }
+    const itens=[
+      ["🔥",fmtN(nutrition.kcal)+" kcal","kcal / dia"],
+      ["🥩",fmtN(nutrition.proteina)+" g","proteína"],
+      ["🍚",fmtN(nutrition.carbo)+" g","carboidratos"],
+      ["🥑",fmtN(nutrition.gordura)+" g","gorduras"],
+      ["💧",fmtN(nutrition.agua,1)+" L","água"],
+      ["🌾",fmtN(nutrition.fibras)+" g","fibras"]
+    ];
+    el.innerHTML=itens.map(x=>`<div class="profit-target"><span>${x[0]} ${x[2]}</span><b>${x[1]}</b></div>`).join("");
+    if(note){
+      const niveis={"1.2":"sedentário","1.375":"leve","1.55":"moderado","1.725":"intenso","1.9":"muito intenso"};
+      const conta = nutrition.objetivo==="manter"
+        ? "Conta: TDEE "+fmtN(nutrition.tdee)+" + ajuste 0 = "+fmtN(nutrition.kcal)+" kcal (manutenção)"
+        : "Conta: TDEE "+fmtN(nutrition.tdee)+" "+((nutrition.ajuste>0?"+":"")+fmtN(nutrition.ajuste))+" = "+fmtN(nutrition.kcal)+" kcal";
+      note.innerHTML="BMR "+fmtN(nutrition.bmr)+" kcal · TDEE "+fmtN(nutrition.tdee)+" kcal ("+(niveis[String(nutrition.atividade)]||"")+")<br>"+conta+"<br>Estimativa. Não substitui avaliação profissional.";
     }
-    $("profitShortcutToggle").checked=localStorage.getItem(SKEY)==="1";
-    let freq=$("profitMeasureFreqRow");
-    if(!freq){
-      freq=document.createElement("div");
-      freq.id="profitMeasureFreqRow";
-      freq.className="switch-row";
-      freq.innerHTML=`<div class="switch-copy"><div class="switch-title">Lembrete de medidas</div><div class="switch-sub">Escolha quando o PROFIT deve pedir uma nova avaliação corporal.</div></div><select id="profitMeasureFreq" class="select-small"><option value="15">15 em 15 dias</option><option value="30">Mensal</option></select>`;
-      c.appendChild(freq);
-      $("profitMeasureFreq").addEventListener("change",e=>{localStorage.setItem("profit_medidas_freq",e.target.value);toast("Frequência das medidas atualizada. 📏");});
-    }
-    $("profitMeasureFreq").value=localStorage.getItem("profit_medidas_freq")||"15";
   }
-  function applyShortcutVisibility(){const box=$("swipeShortcut");if(!box)return;box.classList.toggle("profit-shortcut-disabled",localStorage.getItem(SKEY)!== "1");}
 
   if($("calcularMetasBtn"))$("calcularMetasBtn").onclick=calcular;
   if($("salvarMedidasBtn"))$("salvarMedidasBtn").onclick=salvarMedidas;
