@@ -14,7 +14,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>PROFIT 3.0</title>
-<link href="css/app.css?v=15" rel="stylesheet"/>
+<link href="css/app.css?v=16" rel="stylesheet"/>
 
 
 <!-- ===== PATCH 1 — CSS DO FILTRO NUTRICIONAL ===== -->
@@ -98,6 +98,7 @@
     <label>Objetivo<select class="input" id="nutObjetivo"><option value="emagrecer">Emagrecer</option><option value="manter" selected>Manter</option><option value="ganhar">Ganhar massa/peso</option></select></label>
   </div></div>
   <button class="btn btn-green" id="calcularMetasBtn" type="button">🤖 Atualizar recomendação</button>
+<div class="rec-status" id="recStatus"></div>
   <div class="profit-target-grid" id="profitTargetGrid"></div>
   <div class="small-note" id="profitNutritionNote"></div>
 </div>
@@ -600,7 +601,7 @@
     </div>
 </section>
 <div class="footer">
-    PROFIT 3.0 (v15) • Consistência antes da perfeição 💚
+    PROFIT 3.0 (v16) • Consistência antes da perfeição 💚
 </div>
 <div aria-label="Atalhos por gesto" class="swipe-shortcut" id="swipeShortcut" role="slider" tabindex="0">
 <div aria-hidden="true" class="swipe-directions">
@@ -683,10 +684,10 @@
 </div>
 </div>
 </div>
-<script src="js/foods.js?v=15"></script>
-<script src="js/nutrition.js?v=15"></script>
-<script src="js/app.js?v=15"></script>
-<script src="js/navigation.js?v=15"></script>
+<script src="js/foods.js?v=16"></script>
+<script src="js/nutrition.js?v=16"></script>
+<script src="js/app.js?v=16"></script>
+<script src="js/navigation.js?v=16"></script>
 <div class="profit-config-modal" id="profitConfigModal" aria-hidden="true">
   <div class="profit-config-backdrop" data-close-config="1"></div>
   <div class="profit-config-panel" role="dialog" aria-modal="true" aria-label="Configuração do PROFIT">
@@ -727,11 +728,11 @@
   </div>
 </div>
 
-<script src="js/engine.js?v=15"></script>
+<script src="js/engine.js?v=16"></script>
 
-<script src="js/goals.js?v=15"></script>
-<script src="js/estimativa.js?v=15"></script>
-<script src="js/recomendacao.js?v=15"></script>
+<script src="js/goals.js?v=16"></script>
+<script src="js/estimativa.js?v=16"></script>
+<script src="js/recomendacao.js?v=16"></script>
 <div class="reward-modal" id="profitRewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
   <div class="reward-dialog">
     <div class="reward-dialog-head"><div><h2 id="rewardModalTitle">🎁 Suas conquistas</h2><div class="small-note" id="rewardModalSub">Escolha uma recompensa desbloqueada.</div></div><button class="reward-close" id="rewardCloseBtn" type="button" aria-label="Fechar">×</button></div>
@@ -744,14 +745,14 @@
     <div class="small-note" style="margin-top:10px">Dica: se o compartilhamento direto não estiver disponível no navegador, use “Salvar imagem” e publique pelo Instagram ou WhatsApp.</div>
   </div>
 </div>
-<script src="js/rewards.js?v=15"></script>
+<script src="js/rewards.js?v=16"></script>
 
-<script src="js/reminders.js?v=15"></script>
+<script src="js/reminders.js?v=16"></script>
 
 <!-- ===== PATCH 5 — CONTROLES DO FILTRO NUTRICIONAL ===== -->
-<script src="js/nutrition-ui.js?v=15"></script>
+<script src="js/nutrition-ui.js?v=16"></script>
 
-<script src="js/config.js?v=15"></script>
-<script src="js/sync.js?v=15"></script>
+<script src="js/config.js?v=16"></script>
+<script src="js/sync.js?v=16"></script>
 </body>
 </html>

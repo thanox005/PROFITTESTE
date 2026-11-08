@@ -103,6 +103,15 @@
   function mostrarBloqueio(msg) {
     var note = $('profitNutritionNote');
     if (note) note.innerHTML = '<b>⛔ ' + msg + '</b>';
+    statusRec('bloqueado', '⛔ ' + msg);
+  }
+
+  function statusRec(tipo, texto) {
+    var el = $('recStatus');
+    if (!el) return;
+    el.className = 'rec-status ' + tipo;
+    el.textContent = texto;
+    try { el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
   }
 
   function calcularUI() {
@@ -113,6 +122,7 @@
       atividade: Number(($('perfilAtividade') || {}).value) || 1.55
     };
     if (!d.sexo || !d.idade || !d.altura || !d.peso) {
+      statusRec('bloqueado', '⛔ Preencha sexo, idade, altura e peso atual no Perfil.');
       if (typeof toast === 'function') toast('Preencha sexo, idade, altura e peso atual no Perfil.');
       return;
     }
@@ -151,6 +161,7 @@
     if (typeof renderAgua === 'function') renderAgua();
     renderTargets(r);
     atualizarAlertas();
+    statusRec('ok', '✅ Meta atualizada: ' + fmt(r.kcal) + ' kcal/dia' + (d.pesoMeta ? ' (peso desejado ' + fmt(d.pesoMeta, 1) + ' kg)' : '') + '.');
     if (typeof toast === 'function') toast('Recomendação atualizada. 🎯');
   }
 
